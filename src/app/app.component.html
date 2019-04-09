@@ -50,7 +50,7 @@
   <content class="bookList">
     <div class="clearFilter" *ngIf="!(bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query).length">
       <p>Книги не найдены</p>
-      <button mat-stroked-button color="primary" (click)="selectedSubject = selectedGenre = selectedClass = 'none'">
+      <button mat-stroked-button color="primary" (click)="selectedSubject = selectedGenre = selectedClass = 'none'; query = ''">
         Сбросить фильтры
       </button>
     </div>
