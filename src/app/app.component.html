@@ -48,7 +48,7 @@
   </form>
 
   <content class="bookList">
-    <div *ngIf="!(bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query).length">
+    <div class="clearFilter" *ngIf="!(bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query).length">
       <p>Книги не найдены</p>
       <button mat-stroked-button color="primary" (click)="selectedSubject = selectedGenre = selectedClass = 'none'">
         Сбросить фильтры
@@ -84,7 +84,7 @@
   </content>
 </section>
 
-<footer *ngIf="loaded && (bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query).length">
+<footer *ngIf="loaded">
   <p>
     Made by
     <a target="_blank" href="//hh.ru/applicant/resumes/view?resume=2563ced7ff02f66a9e0039ed1f666662713355">
