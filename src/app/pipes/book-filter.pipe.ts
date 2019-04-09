@@ -14,7 +14,7 @@ export class BookFilterPipe implements PipeTransform {
       value = value.filter(b => b.genre === selectedGenre)
     }
     if (selectedClass !== 'none') {
-      value = value.filter(b => b.grade.includes(selectedClass))
+      value = value.filter(b => (b.grade === selectedClass) || (b.grade.includes(';'+selectedClass+';')) || (b.grade.includes(selectedClass+';') || (b.grade.includes(';'+selectedClass))))
     }
     if (query.trim()) {
       value = value.filter(b => b.title.toLowerCase().includes(query.trim().toLowerCase()))
