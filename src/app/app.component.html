@@ -1,20 +1,94 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<mat-toolbar color="primary">
+  <mat-toolbar-row class="toolbar-row">
+    <span>Витрина</span>
+    <img src="../assets/logo-nav@2x.png">
+  </mat-toolbar-row>
+</mat-toolbar>
 
+<p *ngIf="!loaded" class="loading">
+  Загрузка...
+</p>
+<section *ngIf="loaded">
+  <form>
+    <mat-form-field>
+      <mat-select [(value)]="selectedSubject">
+        <mat-option value="none">Все предметы</mat-option>
+        <mat-option *ngFor="let item of subjects; trackBy:item" [value]="item">{{ item }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select [(value)]="selectedGenre">
+        <mat-option value="none">Все жанры</mat-option>
+        <mat-option *ngFor="let item of genres; trackBy:item" [value]="item">{{ item }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Класс</mat-label>
+      <mat-select [(value)]="selectedClass">
+        <mat-option value="none">Все классы</mat-option>
+        <mat-option *ngFor="let item of classes; trackBy:item" [value]="item">{{ item }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput type="text" placeholder="Поиск" [(ngModel)]="query" name="query">
+      <button mat-button *ngIf="query" matSuffix mat-icon-button aria-label="Clear" (click)="query=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <span>
+      <span class="pointer" (click)="showBonuses = false">Рубли</span> &nbsp;
+      <mat-slide-toggle class="toggler" [checked]="showBonuses" (change)="onToggleBonuses($event)">
+        Бонусы
+      </mat-slide-toggle>
+    </span>
+  </form>
+
+  <content class="bookList">
+    <div *ngIf="!(bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query).length">
+      <p>Книги не найдены</p>
+      <button mat-stroked-button color="primary" (click)="selectedSubject = selectedGenre = selectedClass = 'none'">
+        Сбросить фильтры
+      </button>
+    </div>
+    <mat-card class="bookList-item" [@itemAnim]="loaded"
+      *ngFor="let book of bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query">
+      <mat-card-header class="bookList-item-header">
+        <mat-card-title>{{ book.title.split('.')[0] }}</mat-card-title>
+        <mat-card-subtitle>{{ book.subject }}</mat-card-subtitle>
+      </mat-card-header>
+      <img mat-card-image [src]="'https://www.imumk.ru/svc/coursecover/' + book.courseId" [alt]="book.title">
+      <mat-card-content>
+        <p>
+          {{
+          book.title.split(', ')[1] ?
+            book.title.split(', ')[1] :
+            book.grade.split(';')[1] ?
+              book.grade.split(';')[0] + ' - ' + book.grade.split(';')[1] + ' классы' :
+              book.grade.split(';')[0] + ' класс'
+          }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions class="bookList-item-actions">
+        <a>Подробнее</a>
+        <p>
+          <button mat-stroked-button color="primary">
+            {{ showBonuses ? book.priceBonus + ' Б' : book.price + ' ₽' }}
+          </button>
+        </p>
+      </mat-card-actions>
+    </mat-card>
+  </content>
+</section>
+
+<footer *ngIf="loaded && (bookList | bookFilter:filter:selectedSubject:selectedGenre:selectedClass:query).length">
+  <p>
+    Made by
+    <a target="_blank" href="//hh.ru/applicant/resumes/view?resume=2563ced7ff02f66a9e0039ed1f666662713355">
+      Armen
+    </a>
+  </p>
+</footer>
